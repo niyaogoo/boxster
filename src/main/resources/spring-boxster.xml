@@ -12,4 +12,21 @@
 
     <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
 
+    <bean class="la.xiaoxiao.boxster.MultiRmiServiceExporter">
+        <property name="serviceDescriptions">
+            <list>
+                <value>la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Benz::Benz</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--<bean class="la.xiaoxiao.boxster.BalanceRmiProxyFactoryBean">-->
+    <!--<property name="serviceInterface" value="la.xiaoxiao.boxster.test.Car"/>-->
+    <!--<property name="serviceUrls">-->
+    <!--<list>-->
+    <!--<value>rmi://localhost:1099/Benz</value>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
+
 </beans>

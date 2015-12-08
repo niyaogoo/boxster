@@ -11,17 +11,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = "classpath*:spring-boxster.xml")
 public class CarTest {
 
-    @Autowired
-    @Qualifier("bmw")
-    Car bmw;
 
     @Autowired
     @Qualifier("benz")
     Car benz;
 
+    Object monitor = new Object();
+
     @Test
-    public void testCar() {
-        System.out.println(bmw.getName());
+    public void testCar() throws InterruptedException {
         System.out.println(benz.getName());
     }
 }
