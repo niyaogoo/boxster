@@ -12,7 +12,7 @@
 
     <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
 
-    <bean class="com.boxster.support.MultiRmiServiceExporter">
+    <bean class="com.boxster.MultiRmiServiceExporter">
         <property name="serviceDescriptions">
             <list>
                 <value>com.boxster.test.Car:com.boxster.test.Benz:benz:Benz</value>

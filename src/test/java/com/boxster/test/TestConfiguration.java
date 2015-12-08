@@ -1,6 +1,6 @@
 package com.boxster.test;
 
-import com.boxster.support.MultiRmiServiceExporter;
+import com.boxster.MultiRmiServiceExporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

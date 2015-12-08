@@ -1,4 +1,4 @@
-package com.boxster.support;
+package com.boxster;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
