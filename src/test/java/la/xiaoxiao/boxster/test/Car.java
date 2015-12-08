@@ -1,4 +1,4 @@
-package com.boxster.test;
+package la.xiaoxiao.boxster.test;
 
 public interface Car {
     String getName();

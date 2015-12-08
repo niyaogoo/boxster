@@ -1,4 +1,4 @@
-package com.boxster.test;
+package la.xiaoxiao.boxster.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

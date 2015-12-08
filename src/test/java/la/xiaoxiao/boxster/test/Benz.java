@@ -1,14 +1,14 @@
-package com.boxster.test;
-
+package la.xiaoxiao.boxster.test;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Qualifier("bmw")
-public class Bmw implements Car {
+@Qualifier("benz")
+public class Benz implements Car {
+
     @Override
     public String getName() {
-        return "BMW";
+        return "Mercedes Benz";
     }
 }

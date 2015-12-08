@@ -1,4 +1,4 @@
-package com.boxster.test;
+package la.xiaoxiao.boxster.test;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

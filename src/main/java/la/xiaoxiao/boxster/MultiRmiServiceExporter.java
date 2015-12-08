@@ -1,4 +1,4 @@
-package com.boxster;
+package la.xiaoxiao.boxster;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;

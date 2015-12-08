@@ -1,4 +1,4 @@
-package com.boxster;
+package la.xiaoxiao.boxster;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -19,10 +19,10 @@ import java.util.List;
  * 基于Spring的RMI调用
  * 可请求多个服务器
  */
-public class BalanceRmiFactoryBean implements
+public class BalanceRmiProxyFactoryBean implements
         FactoryBean<Object>, BeanClassLoaderAware, MethodInterceptor, InitializingBean {
 
-    Logger logger = LoggerFactory.getLogger(BalanceRmiFactoryBean.class);
+    Logger logger = LoggerFactory.getLogger(BalanceRmiProxyFactoryBean.class);
 
     private List<String> serviceUrls;
 

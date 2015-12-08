@@ -1,6 +1,6 @@
-package com.boxster.test;
+package la.xiaoxiao.boxster.test;
 
-import com.boxster.MultiRmiServiceExporter;
+import la.xiaoxiao.boxster.MultiRmiServiceExporter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,9 +19,9 @@ public class TestConfiguration {
     public MultiRmiServiceExporter multiRmiServiceExporter() {
         MultiRmiServiceExporter exporter = new MultiRmiServiceExporter();
         List<String> descriptions = new ArrayList<>();
-        descriptions.add("com.boxster.test.Car:com.boxster.test.Benz:benz:Benz");
-        descriptions.add("com.boxster.test.Car:com.boxster.test.Volkswagen:volkswagen:Volkswagen");
-        descriptions.add("com.boxster.test.Car:com.boxster.test.Bmw:bmw:BMW");
+        descriptions.add("Car:Benz:benz:Benz");
+        descriptions.add("Car:Volkswagen:volkswagen:Volkswagen");
+        descriptions.add("Car:Bmw:bmw:BMW");
         exporter.setServiceDescriptions(descriptions);
         return exporter;
     }
