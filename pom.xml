@@ -11,6 +11,16 @@
     <name>boxster</name>
     <repositories>
         <repository>
+            <id>nexus</id>
+            <url>http://121.41.75.25:8081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>spring-milestone</id>
             <name>Spring Maven MILESTONE Repository</name>
             <url>http://repo.spring.io/libs-milestone</url>
@@ -93,6 +103,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://121.41.75.25:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://121.41.75.25:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>

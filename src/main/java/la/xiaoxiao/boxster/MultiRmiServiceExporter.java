@@ -1,5 +1,7 @@
 package la.xiaoxiao.boxster;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultiRmiServiceExporter implements InitializingBean, ApplicationContextAware {
+
+    Logger logger = LoggerFactory.getLogger(MultiRmiServiceExporter.class);
 
     // 服务描述, 格式为{serviceInterface}:{service}:{qualifierName}:{serviceName}
     private List<String> serviceDescriptions;
@@ -87,7 +91,7 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
             String serviceName = description[3];
             return new ServiceDescription(serviceInterface, service, qualifierName, serviceName);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find interface or class", e);
+            throw new IllegalArgumentException("Could not find interface or class, serviceDescription:" + serviceDescription, e);
         }
     }
 

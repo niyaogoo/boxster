@@ -19,9 +19,9 @@ public class TestConfiguration {
     public MultiRmiServiceExporter multiRmiServiceExporter() {
         MultiRmiServiceExporter exporter = new MultiRmiServiceExporter();
         List<String> descriptions = new ArrayList<>();
-        descriptions.add("Car:Benz:benz:Benz");
-        descriptions.add("Car:Volkswagen:volkswagen:Volkswagen");
-        descriptions.add("Car:Bmw:bmw:BMW");
+        descriptions.add("la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Benz:benz:Benz");
+        descriptions.add("la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Volkswagen:volkswagen:Volkswagen");
+        descriptions.add("la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Bmw:bmw:BMW");
         exporter.setServiceDescriptions(descriptions);
         return exporter;
     }
