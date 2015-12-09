@@ -15,7 +15,9 @@
     <bean class="la.xiaoxiao.boxster.MultiRmiServiceExporter">
         <property name="serviceDescriptions">
             <list>
-                <value>la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Benz::Benz</value>
+                <value>
+                    la.xiaoxiao.boxster.test.Car:la.xiaoxiao.boxster.test.Benz::Benz
+                </value>
             </list>
         </property>
     </bean>

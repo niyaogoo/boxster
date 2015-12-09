@@ -34,7 +34,7 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
     public void prepare() throws RemoteException {
         Assert.notEmpty(serviceDescriptions, "ServiceInterfaces is empty");
         for (String serviceDescription : serviceDescriptions) {
-            ServiceDescription description = this.extractServiceDescription(serviceDescription);
+            ServiceDescription description = this.extractServiceDescription(serviceDescription.trim());
             // acquire service service from application context
             Object impl;
             if (description.qualifierName == null || "".equals(description.qualifierName.trim())) {
