@@ -33,6 +33,8 @@ public class BalanceRmiProxyFactoryBean implements
     // the number of retry times while catch RemoteException
     private int retryTimesOnRemoteException = 0;
 
+    private boolean lookupStubOnStartup = false;
+
     private List<RmiClientInterceptor> rmiClientInterceptors = new ArrayList<>();
 
     private int next = 0;
@@ -98,6 +100,7 @@ public class BalanceRmiProxyFactoryBean implements
             rmiClientInterceptor.setServiceInterface(this.serviceInterface);
             rmiClientInterceptor.setServiceUrl(serviceUrl);
             rmiClientInterceptor.setRefreshStubOnConnectFailure(refreshStubOnConnectFailure);
+            rmiClientInterceptor.setLookupStubOnStartup(lookupStubOnStartup);
             rmiClientInterceptor.prepare();
             this.rmiClientInterceptors.add(rmiClientInterceptor);
         }
@@ -158,5 +161,13 @@ public class BalanceRmiProxyFactoryBean implements
 
     public void setRetryTimesOnRemoteException(int retryTimesOnRemoteException) {
         this.retryTimesOnRemoteException = retryTimesOnRemoteException;
+    }
+
+    public boolean isLookupStubOnStartup() {
+        return lookupStubOnStartup;
+    }
+
+    public void setLookupStubOnStartup(boolean lookupStubOnStartup) {
+        this.lookupStubOnStartup = lookupStubOnStartup;
     }
 }

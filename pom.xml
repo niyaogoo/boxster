@@ -4,7 +4,7 @@
 
     <groupId>la.xiaoxiao</groupId>
     <artifactId>boxster</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 
