@@ -60,7 +60,7 @@ public class BalanceRmiProxyFactoryBean implements
     }
 
     protected Object doInvoke(MethodInvocation invocation) throws Throwable {
-        if (next++ > rmiClientInterceptors.size() - 1) {
+        if (++next > rmiClientInterceptors.size() - 1) {
             next = 0;
         }
         RmiClientInterceptor stub = rmiClientInterceptors.get(next);
