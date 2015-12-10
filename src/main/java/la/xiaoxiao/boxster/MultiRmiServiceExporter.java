@@ -24,6 +24,8 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
 
     private int registryPort = 1099;
 
+    private String registryHost;
+
     private List<RmiServiceExporter> rmiServiceExporters = new ArrayList<>();
 
     private ApplicationContext context;
@@ -61,6 +63,7 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
             serviceExporter.setRegistryPort(this.registryPort);
             serviceExporter.setServiceInterface(description.serviceInterface);
             serviceExporter.setService(impl);
+            serviceExporter.setRegistryHost(registryHost);
             serviceExporter.setServiceName(description.serviceName);
 
             serviceExporter.prepare();
@@ -124,4 +127,11 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
 
     }
 
+    public String getRegistryHost() {
+        return registryHost;
+    }
+
+    public void setRegistryHost(String registryHost) {
+        this.registryHost = registryHost;
+    }
 }
