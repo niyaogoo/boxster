@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.remoting.rmi.RmiServiceExporter;
@@ -12,6 +13,7 @@ import org.springframework.util.Assert;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MultiRmiServiceExporter implements InitializingBean, ApplicationContextAware {
 
@@ -36,12 +38,23 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
         for (String serviceDescription : serviceDescriptions) {
             ServiceDescription description = this.extractServiceDescription(serviceDescription.trim());
             // acquire service service from application context
-            Object impl;
+            Object impl = null;
             if (description.qualifierName == null || "".equals(description.qualifierName.trim())) {
                 // get bean by type
                 impl = context.getBean(description.service);
             } else {
-                impl = context.getBean(description.qualifierName, description.service);
+                Map<String, ?> beans = context.getBeansOfType(description.serviceInterface);
+                for (Object bean : beans.values()) {
+                    Qualifier qualifier = bean.getClass().getAnnotation(Qualifier.class);
+                    if (qualifier != null && description.qualifierName.equals(qualifier.value())) {
+                        impl = bean;
+                        break;
+                    }
+                }
+                if (impl == null) {
+                    throw new IllegalArgumentException("Could not find bean with qualifier in ApplicationContext serviceInterface ["
+                            + description.serviceInterface + "], qualifier [" + description.qualifierName + "]");
+                }
             }
 
             RmiServiceExporter serviceExporter = new RmiServiceExporter();
@@ -85,10 +98,10 @@ public class MultiRmiServiceExporter implements InitializingBean, ApplicationCon
                     "serviceDescription must make up with {serviceInterface}:{service}:{qualifierName}:{serviceName}");
         }
         try {
-            Class<?> serviceInterface = Class.forName(description[0]);
-            Class<?> service = Class.forName(description[1]);
-            String qualifierName = description[2];
-            String serviceName = description[3];
+            Class<?> serviceInterface = Class.forName(description[0].trim());
+            Class<?> service = Class.forName(description[1].trim());
+            String qualifierName = description[2].trim();
+            String serviceName = description[3].trim();
             return new ServiceDescription(serviceInterface, service, qualifierName, serviceName);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Could not find interface or class, serviceDescription:" + serviceDescription, e);
