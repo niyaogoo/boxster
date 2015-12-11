@@ -28,7 +28,7 @@ public class BalanceRmiProxyFactoryBean implements
 
     private Class<?> serviceInterface;
 
-    private boolean refreshStubOnConnectFailure = false;
+    private boolean refreshStubOnConnectFailure = true;
 
     // the number of retry times while catch RemoteException
     private int retryTimesOnRemoteException = 0;
