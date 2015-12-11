@@ -11,6 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.rmi.RmiClientInterceptor;
 import org.springframework.util.ClassUtils;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
  * 可请求多个服务器
  */
 public class BalanceRmiProxyFactoryBean implements
-        FactoryBean<Object>, BeanClassLoaderAware, MethodInterceptor, InitializingBean {
+        FactoryBean<Object>, BeanClassLoaderAware, MethodInterceptor, InitializingBean, Serializable {
 
     Logger logger = LoggerFactory.getLogger(BalanceRmiProxyFactoryBean.class);
 
@@ -64,6 +65,9 @@ public class BalanceRmiProxyFactoryBean implements
             next = 0;
         }
         RmiClientInterceptor stub = rmiClientInterceptors.get(next);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Try to invoke rmi method, serviceUrl [{}]", stub.getServiceUrl());
+        }
         try {
             return stub.invoke(invocation);
         } catch (RemoteException ex) {
