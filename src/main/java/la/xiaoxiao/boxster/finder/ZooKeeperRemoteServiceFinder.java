@@ -26,7 +26,7 @@ public class ZooKeeperRemoteServiceFinder
 
     private List<String> serviceUrls = new ArrayList<>();
 
-    private RefreshHandler refreshHandler;
+    private List<RefreshHandler> refreshHandlers = new ArrayList<>();
 
     @Override
 
@@ -50,8 +50,8 @@ public class ZooKeeperRemoteServiceFinder
                     synchronized (serviceUrls) {
                         serviceUrls = list;
                     }
-                    if (refreshHandler != null) {
-                        onRefresh(refreshHandler);
+                    if (refreshHandlers != null) {
+                        onRefresh(refreshHandlers);
                     }
                 }
             }
@@ -59,8 +59,8 @@ public class ZooKeeperRemoteServiceFinder
     }
 
     @Override
-    public void setRefreshHandler(RefreshHandler handler) {
-        this.refreshHandler = handler;
+    public void addRefreshHandler(RefreshHandler handler) {
+        this.refreshHandlers.add(handler);
     }
 
     public ZooKeeper getZooKeeper() {

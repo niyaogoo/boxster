@@ -55,7 +55,7 @@ public class AutoBalanceRmiProxyFactoryBean extends BalanceRmiProxyFactoryBean {
                 setServiceUrls(newServiceUrls);
                 prepare();
             };
-            ((RefreshableRemoteServiceFinder) remoteServiceFinder).setRefreshHandler(refreshHandler);
+            ((RefreshableRemoteServiceFinder) remoteServiceFinder).addRefreshHandler(refreshHandler);
         }
         super.afterPropertiesSet();
     }

@@ -104,6 +104,7 @@ public class BalanceRmiProxyFactoryBean implements
             this.rmiClientInterceptors.add(rmiClientInterceptor);
         }
         cleanExists();
+        logger.info("Remote services prepared, serviceUrls:{}", serviceUrls);
     }
 
     // clean RmiClientInterceptor if it not exists in serviceUrls
@@ -122,6 +123,7 @@ public class BalanceRmiProxyFactoryBean implements
             }
         }
         synchronized (toBeCleanList) {
+            logger.debug("Clean RmiClientInterceptors:{}", toBeCleanList);
             toBeCleanList.forEach(rmiClientInterceptors::remove);
         }
     }
