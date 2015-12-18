@@ -33,7 +33,7 @@ public class ZooKeeperMultiRmiServiceExport extends MultiRmiServiceExporter impl
         }
         this.currentNode = zooKeeper.create(parentNode + "/" + getServiceUrl(getRegistryHost(), getRegistryPort()),
                 null, ZooDefs.Ids.OPEN_ACL_UNSAFE,
-                CreateMode.EPHEMERAL_SEQUENTIAL);
+                CreateMode.EPHEMERAL);
 
         logger.info("ZooKeeper rmi export child node create success, path:{}", currentNode);
         super.afterPropertiesSet();
