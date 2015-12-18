@@ -8,20 +8,21 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.remoting.RemoteAccessException;
 import org.springframework.remoting.rmi.RmiClientInterceptor;
 import org.springframework.util.ClassUtils;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 基于Spring的RMI调用
  * 可请求多个服务器
  */
 public class BalanceRmiProxyFactoryBean implements
-        FactoryBean<Object>, BeanClassLoaderAware, MethodInterceptor, InitializingBean, Serializable {
+        FactoryBean<Object>, BeanClassLoaderAware, MethodInterceptor, InitializingBean {
 
     Logger logger = LoggerFactory.getLogger(BalanceRmiProxyFactoryBean.class);
 
@@ -31,14 +32,11 @@ public class BalanceRmiProxyFactoryBean implements
 
     private boolean refreshStubOnConnectFailure = true;
 
-    // the number of retry times while catch RemoteException
-    private int retryTimesOnRemoteException = 0;
-
     private boolean lookupStubOnStartup = false;
 
     private List<RmiClientInterceptor> rmiClientInterceptors = new ArrayList<>();
 
-    private int next = 0;
+    private Random random = new Random();
 
     private Object serviceProxy;
 
@@ -46,25 +44,31 @@ public class BalanceRmiProxyFactoryBean implements
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        int idx = random.nextInt(rmiClientInterceptors.size());
+        RmiClientInterceptor stub = rmiClientInterceptors.get(idx);
         try {
-            return doInvoke(invocation);
-        } catch (RemoteException e) {
-            if (retryTimesOnRemoteException > 0) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Retry to invoke method, the number of retry times:{}", retryTimesOnRemoteException);
+            return doInvoke(stub, invocation);
+        } catch (RemoteAccessException e) {
+            // try to find an other one remote service, if it has more than one nodes
+            logger.error("Could not access remote service, serviceUrl [{}]", stub.getServiceUrl());
+            if (rmiClientInterceptors.size() > 1) {
+                for (int i = 0; i < rmiClientInterceptors.size(); i++) {
+                    if (i == idx) {
+                        continue;
+                    }
+                    RmiClientInterceptor retryStub = rmiClientInterceptors.get(i);
+                    try {
+                        return doInvoke(retryStub, invocation);
+                    } catch (RemoteAccessException ex) {
+                        logger.error("Could not access remote service, serviceUrl [{}]", retryStub.getServiceUrl());
+                    }
                 }
-                return retryToInvoke(invocation, e);
-            } else {
-                throw e;
             }
+            throw e;
         }
     }
 
-    protected Object doInvoke(MethodInvocation invocation) throws Throwable {
-        if (++next > rmiClientInterceptors.size() - 1) {
-            next = 0;
-        }
-        RmiClientInterceptor stub = rmiClientInterceptors.get(next);
+    protected Object doInvoke(RmiClientInterceptor stub, MethodInvocation invocation) throws Throwable {
         if (logger.isTraceEnabled()) {
             logger.trace("Try to invoke rmi method, serviceUrl [{}]", stub.getServiceUrl());
         }
@@ -79,19 +83,6 @@ public class BalanceRmiProxyFactoryBean implements
         }
     }
 
-    protected Object retryToInvoke(MethodInvocation invocation, RemoteException e) throws Throwable {
-        for (int i = 0; i < retryTimesOnRemoteException; i++) {
-            try {
-                return doInvoke(invocation);
-            } catch (RemoteException ex) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Retry to invoke rmi method failed, try the number of time {}", i + 1);
-                }
-            }
-        }
-        throw e;
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
         prepare();
@@ -100,6 +91,10 @@ public class BalanceRmiProxyFactoryBean implements
 
     public void prepare() {
         for (String serviceUrl : serviceUrls) {
+            if (checkExist(serviceUrl)) {
+                logger.debug("Remote serviceUrl:{} exists already, continue", serviceUrl);
+                continue;
+            }
             RmiClientInterceptor rmiClientInterceptor = new RmiClientInterceptor();
             rmiClientInterceptor.setServiceInterface(this.serviceInterface);
             rmiClientInterceptor.setServiceUrl(serviceUrl);
@@ -108,6 +103,37 @@ public class BalanceRmiProxyFactoryBean implements
             rmiClientInterceptor.prepare();
             this.rmiClientInterceptors.add(rmiClientInterceptor);
         }
+        cleanExists();
+    }
+
+    // clean RmiClientInterceptor if it not exists in serviceUrls
+    private void cleanExists() {
+        List<RmiClientInterceptor> toBeCleanList = new ArrayList<>();
+        for (RmiClientInterceptor i : rmiClientInterceptors) {
+            boolean exist = false;
+            for (String serviceUrl : serviceUrls) {
+                if (serviceUrl.equals(i.getServiceUrl())) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                toBeCleanList.add(i);
+            }
+        }
+        synchronized (toBeCleanList) {
+            toBeCleanList.forEach(rmiClientInterceptors::remove);
+        }
+    }
+
+    // check serviceUrl if exists already
+    private boolean checkExist(String serviceUrl) {
+        for (RmiClientInterceptor i : rmiClientInterceptors) {
+            if (serviceUrl.equals(i.getServiceUrl())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -157,14 +183,6 @@ public class BalanceRmiProxyFactoryBean implements
 
     public void setRefreshStubOnConnectFailure(boolean refreshStubOnConnectFailure) {
         this.refreshStubOnConnectFailure = refreshStubOnConnectFailure;
-    }
-
-    public int getRetryTimesOnRemoteException() {
-        return retryTimesOnRemoteException;
-    }
-
-    public void setRetryTimesOnRemoteException(int retryTimesOnRemoteException) {
-        this.retryTimesOnRemoteException = retryTimesOnRemoteException;
     }
 
     public boolean isLookupStubOnStartup() {
