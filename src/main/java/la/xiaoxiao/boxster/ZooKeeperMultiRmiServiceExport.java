@@ -63,6 +63,6 @@ public class ZooKeeperMultiRmiServiceExport extends MultiRmiServiceExporter impl
                 throw new IllegalStateException("Could not get local host address");
             }
         }
-        return "rmi://" + ip + ":" + port;
+        return ip + ":" + port;
     }
 }
