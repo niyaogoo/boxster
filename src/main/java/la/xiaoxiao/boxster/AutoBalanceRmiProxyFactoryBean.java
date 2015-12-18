@@ -29,12 +29,15 @@ public class AutoBalanceRmiProxyFactoryBean extends BalanceRmiProxyFactoryBean {
         Assert.notNull(remoteServiceName, "The remoteServiceName is null");
 
         List<String> remoteServiceHosts = remoteServiceFinder.getRemoteServiceHostWithPortList();
-        Assert.notEmpty(remoteServiceHosts, "Get remoteServiceHosts return empty list.");
+        // zookeeper may be find later
+//        Assert.notEmpty(remoteServiceHosts, "Get remoteServiceHosts return empty list.");
 
         List<String> serviceUrls = new ArrayList<>();
-        for (String host : remoteServiceHosts) {
-            String serviceUrl = "rmi://" + host + "/" + remoteServiceName;
-            serviceUrls.add(serviceUrl);
+        if (remoteServiceHosts != null) {
+            for (String host : remoteServiceHosts) {
+                String serviceUrl = "rmi://" + host + "/" + remoteServiceName;
+                serviceUrls.add(serviceUrl);
+            }
         }
         setServiceUrls(serviceUrls);
 
