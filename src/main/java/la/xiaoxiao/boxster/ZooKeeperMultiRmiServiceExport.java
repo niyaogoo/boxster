@@ -3,6 +3,7 @@ package la.xiaoxiao.boxster;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -24,9 +25,17 @@ public class ZooKeeperMultiRmiServiceExport extends MultiRmiServiceExporter impl
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(zooKeeper, "zooKeeper is null");
 
+        //ensure parent exists
+        Stat stat = zooKeeper.exists(parentNode, false);
+        if (stat == null) {
+            logger.info("ZooKeeper rmi export parent node doesn't exists, create one, path:{}", parentNode);
+            zooKeeper.create(parentNode, null, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        }
         this.currentNode = zooKeeper.create(parentNode + "/" + getServiceUrl(getRegistryHost(), getRegistryPort()),
                 null, ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL);
+
+        logger.info("ZooKeeper rmi export child node create success, path:{}", currentNode);
         super.afterPropertiesSet();
     }
 
