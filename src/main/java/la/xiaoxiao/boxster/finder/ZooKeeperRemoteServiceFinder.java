@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class ZooKeeperRemoteServiceFinder
 
     private ChildrenMonitor childrenMonitor;
 
-    private List<String> serviceUrls;
+    private List<String> serviceUrls = new ArrayList<>();
 
     private RefreshHandler refreshHandler;
 
