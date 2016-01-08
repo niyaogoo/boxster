@@ -42,17 +42,14 @@ public class ZooKeeperRemoteServiceFinder
     public void prepare() {
         Assert.notNull(zooKeeper, "zooKeeper is null");
         Assert.notNull(watchNode, "watchNode is null");
-        childrenMonitor = new ChildrenMonitor(zooKeeper, watchNode, null, new ChildrenMonitor.ChildrenMonitorListener() {
-            @Override
-            public void processResult(List<String> list) {
-                logger.debug("Remote Services updated, new Services:{}", list);
-                if (list != null && list.size() > 0 && !list.equals(serviceUrls)) {
-                    synchronized (serviceUrls) {
-                        serviceUrls = list;
-                    }
-                    if (refreshHandlers != null) {
-                        onRefresh(refreshHandlers);
-                    }
+        childrenMonitor = new ChildrenMonitor(zooKeeper, watchNode, null, list -> {
+            logger.debug("Remote Services updated, new Services:{}", list);
+            if (list != null && list.size() > 0 && !list.equals(serviceUrls)) {
+                synchronized (serviceUrls) {
+                    serviceUrls = list;
+                }
+                if (refreshHandlers != null) {
+                    onRefresh(refreshHandlers);
                 }
             }
         });

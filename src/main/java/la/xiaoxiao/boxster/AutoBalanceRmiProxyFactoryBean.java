@@ -25,7 +25,7 @@ public class AutoBalanceRmiProxyFactoryBean extends BalanceRmiProxyFactoryBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(remoteServiceFinder, "The remoteServiceFinder is null, " +
-                "You should inject a remoteServiceFinder implementation, ex. PresetRemoteServiceFinder.");
+                "Should inject a remoteServiceFinder implementation, ex. PresetRemoteServiceFinder.");
         Assert.notNull(remoteServiceName, "The remoteServiceName is null");
 
         List<String> remoteServiceHosts = remoteServiceFinder.getRemoteServiceHostWithPortList();

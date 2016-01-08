@@ -10,6 +10,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.RemoteAccessException;
 import org.springframework.remoting.rmi.RmiClientInterceptor;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.rmi.RemoteException;
@@ -42,8 +43,25 @@ public class BalanceRmiProxyFactoryBean implements
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
+    private int waitingTimesOnRmiEmpty = 3;
+
+    private long waitTimeOnRmiEmpty = 500l;
+
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+
+        //wait for rmi service prepared
+        int waitingTimes = 0;
+        while (rmiClientInterceptors.isEmpty()) {
+            logger.warn("No available RMI services, waiting for {}ms", waitTimeOnRmiEmpty);
+            Thread.sleep(waitTimeOnRmiEmpty);
+            waitingTimes++;
+            if (waitingTimes >= waitingTimesOnRmiEmpty) {
+                logger.error("No available RMI service, invocation:{}", invocation);
+                throw new RemoteAccessException("No available RMI service, invocation:{}");
+            }
+        }
+
         int idx = random.nextInt(rmiClientInterceptors.size());
         RmiClientInterceptor stub = rmiClientInterceptors.get(idx);
         try {
@@ -86,10 +104,10 @@ public class BalanceRmiProxyFactoryBean implements
     @Override
     public void afterPropertiesSet() throws Exception {
         prepare();
-        this.serviceProxy = new ProxyFactory(getServiceInterface(), this).getProxy(getBeanClassLoader());
     }
 
     public void prepare() {
+        Assert.notEmpty(serviceUrls, "serviceUrls can not be empty");
         for (String serviceUrl : serviceUrls) {
             if (checkExist(serviceUrl)) {
                 logger.debug("Remote serviceUrl:{} exists already, continue", serviceUrl);
@@ -105,6 +123,8 @@ public class BalanceRmiProxyFactoryBean implements
         }
         cleanExists();
         logger.info("Remote services prepared, serviceUrls:{}", serviceUrls);
+
+        this.serviceProxy = new ProxyFactory(getServiceInterface(), this).getProxy(getBeanClassLoader());
     }
 
     // clean RmiClientInterceptor if it not exists in serviceUrls
@@ -122,7 +142,7 @@ public class BalanceRmiProxyFactoryBean implements
                 toBeCleanList.add(i);
             }
         }
-        synchronized (toBeCleanList) {
+        synchronized (rmiClientInterceptors) {
             logger.debug("Clean RmiClientInterceptors:{}", toBeCleanList);
             toBeCleanList.forEach(rmiClientInterceptors::remove);
         }
@@ -193,5 +213,21 @@ public class BalanceRmiProxyFactoryBean implements
 
     public void setLookupStubOnStartup(boolean lookupStubOnStartup) {
         this.lookupStubOnStartup = lookupStubOnStartup;
+    }
+
+    public long getWaitTimeOnRmiEmpty() {
+        return waitTimeOnRmiEmpty;
+    }
+
+    public void setWaitTimeOnRmiEmpty(long waitTimeOnRmiEmpty) {
+        this.waitTimeOnRmiEmpty = waitTimeOnRmiEmpty;
+    }
+
+    public int getWaitingTimesOnRmiEmpty() {
+        return waitingTimesOnRmiEmpty;
+    }
+
+    public void setWaitingTimesOnRmiEmpty(int waitingTimesOnRmiEmpty) {
+        this.waitingTimesOnRmiEmpty = waitingTimesOnRmiEmpty;
     }
 }
