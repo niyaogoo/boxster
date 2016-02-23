@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %.-1level 只显示信息级别的首字母,%-5level 左对齐显示信息级别全称 -->
+            <!-- 如需自定义关键字，用 %mdc{键名} 表示,程序中用MDC.put("键名","键值")设置，可动态设置 [%logger:%line] -->
+            <Pattern>[%d{MM-dd HH:mm:ss}] [%thread] [%-1level] %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <logger name="la.xiaoxiao" level="DEBUG"/>
+    <logger name="org.eclipse" level="INFO"/>
+    <logger name="org.springframework" level="DEBUG"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.ResultSet" level="INFO"/>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>  
