@@ -1,4 +1,4 @@
-package la.xiaoxiao.boxster;
+package com.ny.boxster;
 
 public class RemoteUtils {
 

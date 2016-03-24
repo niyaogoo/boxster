@@ -1,7 +1,7 @@
-package la.xiaoxiao.boxster;
+package com.ny.boxster;
 
-import la.xiaoxiao.boxster.finder.RefreshableRemoteServiceFinder;
-import la.xiaoxiao.boxster.finder.RemoteServiceFinder;
+import com.ny.boxster.finder.RefreshableRemoteServiceFinder;
+import com.ny.boxster.finder.RemoteServiceFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

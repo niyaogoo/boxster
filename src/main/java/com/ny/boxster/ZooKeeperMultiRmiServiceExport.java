@@ -1,4 +1,4 @@
-package la.xiaoxiao.boxster;
+package com.ny.boxster;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;

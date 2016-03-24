@@ -1,4 +1,4 @@
-package la.xiaoxiao.boxster;
+package com.ny.boxster;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -230,4 +230,5 @@ public class BalanceRmiProxyFactoryBean implements
     public void setWaitingTimesOnRmiEmpty(int waitingTimesOnRmiEmpty) {
         this.waitingTimesOnRmiEmpty = waitingTimesOnRmiEmpty;
     }
+
 }

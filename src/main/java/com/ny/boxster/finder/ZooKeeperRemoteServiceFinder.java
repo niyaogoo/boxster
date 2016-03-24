@@ -1,4 +1,4 @@
-package la.xiaoxiao.boxster.finder;
+package com.ny.boxster.finder;
 
 import la.xiaoxiao.common.zookeeper.ChildrenMonitor;
 import org.apache.zookeeper.ZooKeeper;
