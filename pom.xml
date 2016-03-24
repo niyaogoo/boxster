@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>la.xiaoxiao</groupId>
+    <groupId>com.ny</groupId>
     <artifactId>boxster</artifactId>
-    <version>0.1.20-SNAPSHOT</version>
+    <version>0.1.20</version>
 
     <packaging>jar</packaging>
 
@@ -12,7 +12,7 @@
     <repositories>
         <repository>
             <id>nexus</id>
-            <url>http://120.55.162.22:8081/nexus/content/groups/public/</url>
+            <url>http://120.55.162.2:8081/nexus/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
